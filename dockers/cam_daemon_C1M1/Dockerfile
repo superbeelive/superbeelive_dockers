@@ -1,18 +1,32 @@
 From ubuntu:latest
 LABEL maintainer="Sebastien Druon (sebastien.druon@umontpellier.fr)"
-RUN apt-get update \
-	&& apt-get install -y libaravis-dev libaravis-0.8 aravis-tools-cli\
-	&& apt-get install -y make \
-	&& apt-get install -y gcc \
-	&& apt-get install -y binutils \
-	&& apt-get install -y autoconf \
-	&& apt-get install -y automake \
-	&& apt-get install -y libtool \
-	&& apt-get install -y pkg-config \
-	&& apt-get install -y git \
-	&& apt-get install -y file \
-	&& apt-get install -y patch \
-	&& rm -fr /var/lib/apt/lists/*
+RUN apt-get update && \
+DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y \
+	libaravis-dev \
+	libaravis-0.8 \
+	aravis-tools-cli\
+	libusb-1.0 \
+	libusb-dev \
+	libglib2.0 \
+	libglib2.0-dev \
+	make \
+	gcc \
+	binutils \
+	autoconf \
+	automake \
+	libtool \
+	pkg-config \
+	git \
+	file \
+	patch \
+&& rm -fr /var/lib/apt/lists/*
 WORKDIR /root
-
-CMD /bin/bash
+RUN git clone https://github.com/superbeelive/superbeelive.git
+WORKDIR /root/superbeelive/sbl_cam_daemon
+RUN make
+CMD ["./sbl_cam_daemon", \
+	 "-d", "1", \
+	 "-w", "1280", "-h", "720", "-f", "30", \
+	 "-o", "/workspace", \
+	 "-m", "1", "-c", "1", \
+	 "192.168.2.3"]
