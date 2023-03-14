@@ -1,0 +1,5 @@
+docker build -t cam_daemon:c1m1 --build-arg cam=1 --build-arg module=1 --build-arg
+ip=192.168.2.1 .
+
+docker run --network host --mount type=bind,source=/home/superbeelive,target=/workspace cam_daemon:c1m1
+
